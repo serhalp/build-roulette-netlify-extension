@@ -27,7 +27,8 @@ export function SpinningWheel({ onSpinComplete }: Props) {
     setRotation(finalRotation);
 
     setTimeout(() => {
-      const normalizedRotation = finalRotation % 360;
+      // The origin is at 3 o'clock, but the result pointer is at 12 o'clock, so subtract 270 degs
+      const normalizedRotation = (finalRotation - 270) % 360;
       const sectionSize = 360 / SECTIONS.length;
       const sectionIndex = Math.floor((360 - normalizedRotation) / sectionSize);
       const section = SECTIONS[sectionIndex % SECTIONS.length];
@@ -37,10 +38,10 @@ export function SpinningWheel({ onSpinComplete }: Props) {
   };
 
   return (
-    <div className="flex flex-col items-center gap-8">
-      <div className="relative w-64 h-64">
+    <div className="tw-flex tw-flex-col tw-items-center tw-gap-8">
+      <div className="tw-relative tw-w-64 tw-h-64">
         <svg
-          className="w-full h-full"
+          className="tw-w-full tw-h-full"
           viewBox="0 0 100 100"
           style={{
             transform: `rotate(${rotation}deg)`,
@@ -66,7 +67,7 @@ export function SpinningWheel({ onSpinComplete }: Props) {
                 <path
                   d={`M50,50 L${x1},${y1} A40,40 0 0,1 ${x2},${y2} Z`}
                   fill={section.color}
-                  className="hover:brightness-110 transition-all cursor-pointer"
+                  className="tw-hover:brightness-110 tw-transition-all tw-cursor-pointer"
                 />
                 {/* Radius border */}
                 <line
@@ -84,18 +85,23 @@ export function SpinningWheel({ onSpinComplete }: Props) {
         </svg>
 
         {/* Center point */}
-        <div className="absolute top-1/2 left-1/2 w-4 h-4 -mt-2 -ml-2 bg-white rounded-full shadow-md" />
+        <div className="tw-absolute tw-top-1/2 tw-left-1/2 tw-w-4 tw-h-4 tw--mt-2 tw--ml-2 tw-bg-white tw-rounded-full tw-shadow-md" />
 
         {/* Pointer */}
-        <div className="absolute top-0 left-1/2 -ml-3 w-6 h-6">
-          <div className="w-0 h-0 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent border-b-[16px] border-b-red-500" />
+        <div
+          className="tw-absolute tw-top-0 tw-left-1/2 tw--ml-3 tw-w-6 tw-h-6"
+          style={{
+            transform: "rotate(180deg)",
+          }}
+        >
+          <div className="tw-w-0 tw-h-0 tw-border-l-[12px] tw-border-l-transparent tw-border-r-[12px] tw-border-r-transparent tw-border-b-[16px] tw-border-b-red-500" />
         </div>
       </div>
 
       <Button
         onClick={spinWheel}
         disabled={isSpinning}
-        className="px-6 py-3 text-lg disabled:cursor-not-allowed"
+        className="tw-px-6 tw-py-3 tw-text-lg tw-disabled:cursor-not-allowed"
       >
         {isSpinning ? "Spinning..." : "Spin the Wheel!"}
       </Button>
