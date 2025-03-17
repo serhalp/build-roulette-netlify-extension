@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://sdk.netlify.com/sdk/config-schema.json
 config:
-  slug: fixme
+  slug: 6o1mdfwm-build-roulette
   name: Build Roulette
   scopes:
     site: ["read", "write"]
