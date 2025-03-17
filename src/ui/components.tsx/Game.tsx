@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Alert, Card, CardTitle } from "@netlify/sdk/ui/react/components";
 import { useNetlifySDK } from "@netlify/sdk/ui/react";
 
-import { trpc } from "../trpc";
+// import { trpc } from "../trpc";
 import { SpinningWheel } from "./SpinningWheel";
 
 export const Game = () => {
@@ -10,20 +10,21 @@ export const Game = () => {
     context: { deployId },
   } = useNetlifySDK();
 
-  if (!deployId) {
-    console.warn("Expected deployId in SiteDeploySurface context");
-    return null;
-  }
-
-  const deployCancelMutation = trpc.deploy.cancel.useMutation({
-    deployId,
-  });
-  const [shouldCancelBuild, setShouldCancelBuild] = useState(false);
+  // const deployCancelMutation = trpc.cancelDeploy.useMutation();
+  const [shouldCancelBuild, setShouldCancelBuild] = useState<boolean | null>(
+    null,
+  );
 
   const handleOnSpinComplete = async (result: boolean) => {
+    // console.debug("result:", result);
     setShouldCancelBuild(result);
     if (result) {
-      deployCancelMutation.mutate();
+      if (!deployId) {
+        // FIXME(serhalp) This isn't actually available in this surface yet, so this always triggers.
+        console.warn("Expected deployId in SiteDeploySurface context");
+        return;
+      }
+      // deployCancelMutation.mutate({ deployId });
     }
   };
 
@@ -34,15 +35,20 @@ export const Game = () => {
 
         <Alert type="info">
           Spin the wheel for a 1-in-6 chance of having your in-progress deploy
-          canceled!
+          canceled! <span className="tw-font-bold">Disclaimer: </span> this is
+          not a joke.
         </Alert>
 
         <SpinningWheel onSpinComplete={handleOnSpinComplete} />
       </Card>
 
-      {shouldCancelBuild ? (
+      {shouldCancelBuild != null ? (
         <Card className="tw-text-center tw-text-xl">
-          {deployCancelMutation.isLoading ? "😬 Cancelling deploy..." : ""}
+          {shouldCancelBuild
+            ? false // deployCancelMutation.isLoading
+              ? "😬 Cancelling deploy..."
+              : "🌝 Deploy cancelled"
+            : "😅 Your deploy is safe!"}
         </Card>
       ) : null}
     </>
